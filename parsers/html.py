@@ -12,11 +12,15 @@ class NlsHTMLParser(HTMLParser):
     nls_func_regex: re.Pattern[str] = re.compile(
         r"\{\{\s*nls\.tr\(\s*['\"](.+?)['\"]\s*\)\s*\}\}")
 
-    def __init__(self, path: str) -> None:
+    def __init__(self, path: str, base_path:str) -> None:
         super().__init__()
         self.results: list[Text] = []
         self.current_context: str = ""
-        self.path = path
+        #self.path = path 
+        base_path_resolved = Path(base_path).resolve()
+        file_path_resolved = Path(path).resolve()
+        self.rel_path =  file_path_resolved.relative_to(base_path_resolved.parent).as_posix()
+        
 
     def handle_starttag(self, tag: str,
                         attrs: Sequence[Tuple[str, Optional[str]]]) -> None:
@@ -30,21 +34,21 @@ class NlsHTMLParser(HTMLParser):
             for match in matches:
                 self.results.append(
                     Text(key=match, context=self.current_context,
-                         sources=[self.path]))
+                         sources=[self.rel_path]))
         else:
             matches_func: list[str] = self.nls_func_regex.findall(data)
             for match in matches_func:
                 self.results.append(
                     Text(key=match, context=self.current_context,
-                         sources=[self.path]))
+                         sources=[self.rel_path]))
 
 
-def parse_html(parse_path: str) -> list[Text]:
+def parse_html(parse_path: str, base_path:str) -> list[Text]:
     path_obj: Path = Path(parse_path)
     if not path_obj.exists():
         raise FileNotFoundError(f"{path} does not exist")
 
-    parser: NlsHTMLParser = NlsHTMLParser(path=parse_path)
+    parser: NlsHTMLParser = NlsHTMLParser(path=parse_path, base_path=base_path)
     with path_obj.open("r", encoding="utf-8") as f:
         content: str = f.read()
 

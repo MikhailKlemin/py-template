@@ -32,7 +32,7 @@ def main(
             if debug:
                 typer.echo(f"Parsing HTML file: {f}")
             try:
-                h:  list[Text] = parse_html(str(f))
+                h:  list[Text] = parse_html(str(f), base_path=dir.as_posix())
                 all_results.extend(h)
             except Exception as e:
                 typer.echo(f"Error parsing {f}: {e}")
@@ -40,7 +40,7 @@ def main(
             if debug:
                 typer.echo(f"Parsing HTML file: {f}")
             try:
-                t:  list[Text] = parse_ts(str(f))
+                t:  list[Text] = parse_ts(str(f),base_path=dir.as_posix())
                 all_results.extend(t)
             except Exception as e:
                 typer.echo(f"Error parsing {f}: {e}")
