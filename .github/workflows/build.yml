@@ -13,7 +13,7 @@ jobs:
     runs-on: ${{ matrix.os }}
 
     steps:
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@v4
 
       - name: Set up Python
         uses: actions/setup-python@v5
@@ -28,10 +28,19 @@ jobs:
           pip install pyinstaller
 
       - name: Build executable
-        run: pyinstaller --onefile cli.py
+        run: |
+          pyinstaller --onefile --name cli cli.py
 
-      - name: Upload artifact
+      - name: Upload Linux binary
+        if: matrix.os == 'ubuntu-latest'
         uses: actions/upload-artifact@v4
         with:
-          name: cli-${{ matrix.os }}
-          path: dist/*
+          name: cli-linux
+          path: dist/cli
+
+      - name: Upload Windows exe
+        if: matrix.os == 'windows-latest'
+        uses: actions/upload-artifact@v4
+        with:
+          name: cli-windows
+          path: dist/cli.exe
