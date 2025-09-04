@@ -46,7 +46,9 @@ def main(
                 typer.echo(f"Error parsing {f}: {e}")
 
     merged_texts = TextMerger().add_texts(all_results).get_merged()
-    result: Result = Result(texts=merged_texts)
+    sorted_texts = sorted(merged_texts, key=lambda x: (x.key, x.context))
+    result: Result = Result(texts=sorted_texts)
+    
 
     exporter = ResultJSONExporter(exclude_sources=nosources, pretty=pretty)
     json_output: str = exporter.to_json(result)
