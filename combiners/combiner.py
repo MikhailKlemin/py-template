@@ -10,12 +10,12 @@ class TextMerger:
     def add_texts(self, texts: list[Text]) -> "TextMerger":
         """Add a list of Texts to the merger."""
         for t in texts:
-            identifier = (t.key, t.context)
+            identifier = (t.Key, t.Context)
             if identifier not in self._merged:
                 self._merged[identifier] = Text(
-                    key=t.key, context=t.context, sources=[])
+                    Key=t.Key, Context=t.Context, Sources=[])
 
-            self._merged[identifier].sources.extend(t.sources)
+            self._merged[identifier].Sources.extend(t.Sources)
 
         return self  # Allows chaining
 

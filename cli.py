@@ -40,15 +40,14 @@ def main(
             if debug:
                 typer.echo(f"Parsing HTML file: {f}")
             try:
-                t:  list[Text] = parse_ts(str(f),base_path=dir.as_posix())
+                t:  list[Text] = parse_ts(str(f), base_path=dir.as_posix())
                 all_results.extend(t)
             except Exception as e:
                 typer.echo(f"Error parsing {f}: {e}")
 
     merged_texts = TextMerger().add_texts(all_results).get_merged()
-    sorted_texts = sorted(merged_texts, key=lambda x: (x.key, x.context))
-    result: Result = Result(texts=sorted_texts)
-    
+    sorted_texts = sorted(merged_texts, key=lambda x: (x.Key, x.Context))
+    result: Result = Result(Texts=sorted_texts)
 
     exporter = ResultJSONExporter(exclude_sources=nosources, pretty=pretty)
     json_output: str = exporter.to_json(result)
